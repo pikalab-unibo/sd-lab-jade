@@ -24,7 +24,7 @@
 \AtBeginSection{
     \begin{frame}[c]\frametitle{Outline}
         % 		\begin{multicols}{2}
-        \tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/shaded, subsubsectionstyle=hide/hide]
+        \tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide, subsubsectionstyle=show/hide]
         % 		\end{multicols}
     \end{frame}
 }
@@ -32,7 +32,7 @@
 \AtBeginSubsection{
     \begin{frame}[c]\frametitle{Next in Line\ldots}
         % 		\begin{multicols}{2}
-        \tableofcontents[sectionstyle=shaded/shaded, subsectionstyle=show/shaded, subsubsectionstyle=hide/hide]
+        \tableofcontents[sectionstyle=shaded/shaded, subsectionstyle=show/shaded, subsubsectionstyle=show/hide]
         % 		\end{multicols}
     \end{frame}
 }
@@ -141,6 +141,63 @@
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
 
+\subsection{\jade{} + Gradle}
+
+\begin{frame}[allowframebreaks]{Running \jade{} from Gradle}
+
+    In this lab, we provide two tasks for running \jade{} from Gradle:
+
+    \bigskip
+
+    \begin{block}{\textbf{\texttt{startPlatform}} --- creates \& starts a new platform with GUI}
+        \begin{itemize}
+            \item default name: \texttt{it.unibo.sd.jade.platform}
+            %
+            \begin{itemize}
+                \item (settable through the \texttt{platformName} property)
+            \end{itemize}
+
+            \item default host: \texttt{localhost}
+            %
+            \begin{itemize}
+                \item (settable through the \texttt{platformHost} property)
+            \end{itemize}
+
+            \item \alert{no agent} is further instantiated
+        \end{itemize}
+    \end{block}
+    %
+    \hint{GUI here refers the Remote Monitoring Agent (RMA)'s GUI}
+
+    \begin{block}{\textbf{\texttt{startContainer}} --- creates \& starts a new container}
+        %
+        \begin{itemize}
+
+            \item default name: \texttt{it.unibo.sd.jade.container\#\textit{TIMESTAMP}}
+            %
+            \begin{itemize}
+                \item (settable through the \texttt{containerBaseName} property)
+            \end{itemize}
+
+            \item assumes a platform is running on \texttt{localhost}
+            %
+            \begin{itemize}
+                \item (different hosts can be provided via the \texttt{platformHost} property)
+            \end{itemize}
+
+            \item agents to be instantiated can be specified via the \alert{\texttt{agents}} property
+            %
+            \begin{itemize}
+                \item semi-colon-separated list of string in the form
+                %
+                \begin{center}\ttfamily
+                    AGENT\_NAME\alert{:}package.of.AgentClass$\underbrace{\texttt{(arg1, arg2, \ldots)}}_{optional}$
+                \end{center}
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+\end{frame}
+
 %-------------------------------------------------------------------------------
 \subsection{\jade{} Agents}
 %-------------------------------------------------------------------------------
@@ -226,6 +283,51 @@
     %
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
+
+\begin{frame}{General workflow for starting agents in Gradle}
+
+    \begin{enumerate}
+        \item Start a new, empty platform with
+        %
+        \begin{itemize}
+            \item[\$] \texttt{gradle startPlatform}
+        \end{itemize}
+
+        \vfill
+
+        \item Edit the code of the agent to be discussed (e.g. \texttt{HelloAgent})
+
+        \vfill
+
+        \item Add the following line to \texttt{gradle.properties}:
+        %
+        \begin{center}\ttfamily
+            \alert{agents}=\textit{nameOfTheAgent}:package.of.the.AgentClass
+        \end{center}
+
+        \vfill
+
+        \item Start a new container for the aforementioned agent
+        %
+        \begin{itemize}
+            \item[\$] \texttt{gradle startContainer}
+        \end{itemize}
+
+        \vfill
+
+        \item Inspect the logs, draw conclusions
+
+        \vfill
+
+        \item Close the container $\rightarrow$ Change some code $\rightarrow$ Restart container
+
+        \vfill
+
+        \item Close the platform
+
+    \end{enumerate}
+
+\end{frame}
 
 %-------------------------------------------------------------------------------
 \subsection{Agent Behaviours}
@@ -374,6 +476,8 @@
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
 
+
+
 %\\\\\\\\\\\\\\\\\\\\\
 \begin{frame}\frametitle{Behaviours Scheduling: Recap}
     %
@@ -401,7 +505,66 @@
     \begin{block}{Round-robin}
         After initialisation, first behaviour from the \emph{active behaviours} pool (\alert{ready queue}) is scheduled for execution
     \end{block}
+\end{frame}
+%\\\\\\\\\\\\\\\\\\\\\
+
+\begin{frame}{Agents' code overview}
+    \lstinputlisting[language=Java]{./res/src/ExampleAgent.java}
+\end{frame}
+
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Atomic Actions}
+
+\begin{frame}{Demo \currentDemo{} -- Hello World}
+    \lstinputlisting[language=Java]{./res/src/HelloAgent.java}
     %
+    \begin{itemize}
+        \item what do you expect the agent to do?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Demo \currentDemo{} -- One-Shot Behaviour}
+
+    A behaviour which is executed just once:
+    %
+    \vfill
+    %
+    \lstinputlisting[language=Java]{./res/src/OneShotBehaviour.java}
+    %
+    \begin{itemize}
+        \item represents \alert{atomic} actions
+    \end{itemize}
+\end{frame}
+
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Long-Lasting Actions}
+
+\begin{frame}{Demo \currentDemo{} -- Hello World\textbf{s}}
+    \lstinputlisting[language=Java]{./res/src/HelloAgent2.java}
+    %
+    \begin{itemize}
+        \item what do you expect the agent to do?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Demo \currentDemo{} -- Cyclic Behaviour}
+
+    A behaviour which is executed infinitely many times:
+    %
+    \vfill
+    %
+    \lstinputlisting[language=Java]{./res/src/CyclicBehaviour.java}
+    %
+    \begin{itemize}
+        \item represents \alert{long-lasting} actions
+        \item what's the advantage w.r.t. ordinary \texttt{while(true)} loops?
+    \end{itemize}
+\end{frame}
+
+%\\\\\\\\\\\\\\\\\\\\\
+\begin{frame}[c,allowframebreaks]\frametitle{Round-Robin, Non-Preemptive Scheduling -- Remarks}
     \begin{block}{Some remarks}
         %
         \begin{itemize}
@@ -451,17 +614,73 @@
     %
 \end{frame}
 
-%\begin{frame}[c]
-%    \frametitle{Examples in \texttt{ds.lab.jade.behaviours.*}}
-%    Open a command prompt and position yourself into folder \cterm{ds-jade/}
-%    \begin{itemize}
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -gui -agents ste:ds.lab.jade.behaviours.SimpleBehavioursAgent}
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -gui -agents ste:ds.lab.jade.behaviours.CompositeBehavioursAgent}
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -gui -agents ste:ds.lab.jade.behaviours.FSMLikeAgent}
-%    \end{itemize}
-%    On Windows, substitute ``:'' with ``;'', and ``/'' with ``\textbackslash''
-%\end{frame}
-%\\\\\\\\\\\\\\\\\\\\\
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Advantages of Internal Scheduling}
+
+\begin{frame}[allowframebreaks]
+    \frametitle{Demo \currentDemo{} -- Concurrent behaviours}
+
+    Consider the following agent:
+    %
+    \lstinputlisting[language=Java]{./res/src/HelloAgent3.java}
+
+    \bigskip
+
+    What do you expect the agent to do?
+    %
+    \begin{itemize}
+        \item positive number first? why?
+        \item negative number first? why?
+        \item some \alert{interleaving} of positive and negative numbers? which one?
+    \end{itemize}
+
+    \framebreak
+
+    \begin{block}{Round-robin cooperative scheduling}
+        An agent can carry out \alert{several} behaviours \alert{simultaneously}
+        %
+        \begin{itemize}
+            \item behaviours run concurrently
+
+            \item using a \alert{Round-Robin}, cooperative policy
+            %
+            \begin{itemize}
+                \item[!] deterministic
+                \item interleaving occurs at the \texttt{action()} level
+            \end{itemize}
+
+            \item 1-agent-1-thread
+            %
+            \begin{itemize}
+                \item[$\rightarrow$] behaviours share the same thread
+                \item[$\rightarrow$] the agent is always executing at most 1 \texttt{action()} at a time
+            \end{itemize}
+        \end{itemize}
+    \end{block}
+
+    \framebreak
+
+    Expected outcome:
+    %
+    \lstinputlisting{./res/src/ExpectedOutcome3.txt}
+
+    \framebreak
+
+    Pay attention to the \alert{cooperative} part. Consider for instance:
+    %
+    \lstinputlisting[language=Java]{./res/src/HelloAgent4.java}
+
+    \bigskip
+
+    \begin{alertblock}{Avoid \textbf{long-standing} tasks within behaviours}
+        \begin{itemize}
+            \item they would block/slow down any other behaviour
+            \item and therefore the whole agent
+        \end{itemize}
+    \end{alertblock}
+
+\end{frame}
 
 %-------------------------------------------------------------------------------
 \subsection{\jade{} Messaging}
@@ -580,7 +799,7 @@
         The simplest way to identify an agent is by its local name
         \begin{itemize}\tt
             \item[]\ldots
-            \item[] msg.addReceiver(new AID("myAgent", \alert{AID.ISLOCALNAME}));
+            \item[] msg.addReceiver(new AID("myAgent", \alert{false}));
             \item[] \ldots
         \end{itemize}
         \jade{} ACC will automatically associate to the given agent name its \texttt{AID}
@@ -696,261 +915,7 @@
     %
 \end{frame}
 
-%\begin{frame}[c, allowframebreaks]
-%    \frametitle{Examples in \texttt{ds.lab.jade.messaging.*}}
-%    Open a command prompt and position yourself into folder \cterm{ds-jade/}
-%    \begin{itemize}
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -gui -agents ste:ds.lab.jade.messaging.PingPongAgent}
-%        \begin{itemize}
-%            \item from RMA GUI launch the ``DummyAgent''
-%            \item right-click on blank text field next to ``Receivers'' and left-click ``Add''
-%            \item check ``NAME'' checkbox and digit ``ste'' (or whichever name you gave to he ping pong agent) then ``Ok''
-%            \item select ``propose'' as the ``Communicative act'' and fill ``Content'' with either ``ping'' or ``pong''
-%            \item fill ``Ontology'' with ``ping-pong''
-%            \item click ``Send'' (envelope icon)
-%            \item select messages from the box on the right (most recent at the top) and click ``View'' (glasses icon) to inspect message content
-%        \end{itemize}
-%    \end{itemize}
-%    On Windows, substitute ``:'' with ``;'' an ``/'' with ``\textbackslash''
-%    \begin{itemize}
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -gui -agents calculator:ds.lab.jade.messaging.calculator.CalculatorAgent \&} (agent name MUST BE ``calculator'')
-%        \item \cterm{java -cp libs/jade.jar:bin/ jade.Boot -container -agents ste:ds.lab.jade.messaging.calculator.ClientAgent \&}
-%    \end{itemize}
-%    On Windows, substitute ``\&'' with ``start /B'' (placed as first command)
-%\end{frame}
-%\\\\\\\\\\\\\\\\\\\\\
-
-\section{Operations}
-
-\subsection{\jade{} + Gradle}
-
-\begin{frame}{Running \jade{} from Gradle}
-
-    We provide two tasks for running \jade{} from Gradle:
-    %
-    \vfill
-    %
-    \begin{itemize}
-    	\item \alert{\texttt{startPlatform}} --- creates \& starts a new platform with GUI
-    	%
-    	\begin{itemize}
-    		\item default name: \texttt{it.unibo.sd.jade.platform}
-    		%
-    		\begin{itemize}
-				\item (settable through the \texttt{platformName} property)
-    		\end{itemize}
-
-    		\item default host: \texttt{localhost}
-    		%
-    		\begin{itemize}
-    			\item (settable through the \texttt{platformHost} property)
-    		\end{itemize}
-
-    		\item \alert{no agent} further agent is instantiated
-    	\end{itemize}
-
-    	\vfill
-
-	    \item \alert{\texttt{startContainer}} --- creates \& starts a new container
-	    %
-	    \begin{itemize}
-
-	    	\item default name: \texttt{it.unibo.sd.jade.container\#\textit{TIMESTAMP}}
-	    	%
-	    	\begin{itemize}
-	    		\item (settable through the \texttt{containerBaseName} property)
-	    	\end{itemize}
-
-	    	\item assumes a platform is running on \texttt{localhost}
-	    	%
-	    	\begin{itemize}
-	    		\item (different hosts can be provided via the \texttt{platformHost} property)
-	    	\end{itemize}
-
-    		\item agents to be instantiated can be specified via the \alert{\texttt{agents}} property
-    		%
-    		\begin{itemize}
-    			\item semi-colon-separated list of string in the form
-    			%
-    			\begin{center}\ttfamily
-    				AGENT\_NAME\alert{:}package.of.AgentClass$\underbrace{\texttt{(arg1, arg2, \ldots)}}_{optional}$
-    			\end{center}
-    		\end{itemize}
-	    \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{General workflow for demos}
-
-	\begin{enumerate}
-		\item Start a new, empty platform with
-		%
-		\begin{itemize}
-			\item[\$] \texttt{gradle startPlatform}
-		\end{itemize}
-
-		\vfill
-
-		\item Edit the code of the agent to be discussed (e.g. \texttt{HelloAgent})
-
-		\vfill
-
-		\item Add the following line to \texttt{gradle.properties}:
-		%
-		\begin{center}\ttfamily
-			\alert{agents}=\textit{helloAgent}:it.unibo.ds.jade.HelloAgent
-		\end{center}
-
-		\vfill
-
-		\item Start a new container containing the \texttt{helloAgent} agent
-		%
-		\begin{itemize}
-			\item[\$] \texttt{gradle startContainer}
-		\end{itemize}
-
-		\vfill
-
-		\item Inspect the logs, draw conclusions
-
-		\vfill
-
-		\item Close the container $\rightarrow$ Change some code $\rightarrow$ Restart container
-
-		\vfill
-
-		\item Close the platform
-
-	\end{enumerate}
-
- \end{frame}
-
-\section{Demos}
-
-\begin{frame}{Agents' code overview}
-	\lstinputlisting[language=Java]{./res/src/ExampleAgent.java}
-\end{frame}
-
-\startDemo
-
-\subsection{Demo \currentDemo{} -- Atomic actions}
-
-\begin{frame}{Demo \currentDemo{} -- Hello World}
-	\lstinputlisting[language=Java]{./res/src/HelloAgent.java}
-	%
-	\begin{itemize}
-		\item what do you expect the agent to do?
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Demo \currentDemo{} -- One-Shot Behaviour}
-
-	A behaviour which is executed just once:
-	%
-	\vfill
-	%
-	\lstinputlisting[language=Java]{./res/src/OneShotBehaviour.java}
-	%
-	\begin{itemize}
-		\item represents \alert{atomic} actions
-	\end{itemize}
-\end{frame}
-
-\startDemo
-
-\subsection{Demo \currentDemo{} -- Long-lasting actions}
-
-\begin{frame}{Demo \currentDemo{} -- Hello World\textbf{s}}
-	\lstinputlisting[language=Java]{./res/src/HelloAgent2.java}
-	%
-	\begin{itemize}
-		\item what do you expect the agent to do?
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{Demo \currentDemo{} -- Cyclic Behaviour}
-
-	A behaviour which is executed infinitely many times:
-	%
-	\vfill
-	%
-	\lstinputlisting[language=Java]{./res/src/CyclicBehaviour.java}
-	%
-	\begin{itemize}
-		\item represents \alert{long-lasting} actions
-		\item what's the advantage w.r.t. ordinary \texttt{while(true)} loops?
-	\end{itemize}
-\end{frame}
-
-\startDemo
-
-\subsection{Demo \currentDemo{} -- Advantages of Internal Scheduling}
-
-\begin{frame}[allowframebreaks]
-    \frametitle{Demo \currentDemo{} -- Concurrent behaviours}
-
-    Consider the following agent:
-    %
-    \lstinputlisting[language=Java]{./res/src/HelloAgent3.java}
-
-    \bigskip
-
-    What do you expect the agent to do?
-    %
-    \begin{itemize}
-        \item positive number first? why?
-        \item negative number first? why?
-        \item some \alert{interleaving} of positive and negative numbers? which one?
-    \end{itemize}
-
-    \framebreak
-
-    \begin{block}{Round-robin cooperative scheduling}
-        An agent can carry out \alert{several} behaviours \alert{simultaneously}
-        %
-        \begin{itemize}
-            \item behaviours run concurrently
-
-            \item using a \alert{Round-Robin}, cooperative policy
-            %
-            \begin{itemize}
-                \item[!] deterministic
-                \item interleaving occurs at the \texttt{action()} level
-            \end{itemize}
-
-            \item 1-agent-1-thread
-            %
-            \begin{itemize}
-                \item[$\rightarrow$] behaviours share the same thread
-                \item[$\rightarrow$] the agent is always executing at most 1 \texttt{action()} at a time
-            \end{itemize}
-        \end{itemize}
-    \end{block}
-
-    \framebreak
-
-    Expected outcome:
-    %
-    \lstinputlisting{./res/src/ExpectedOutcome3.txt}
-
-    \framebreak
-
-    Pay attention to the \alert{cooperative} part. Consider for instance:
-    %
-    \lstinputlisting[language=Java]{./res/src/HelloAgent4.java}
-
-    \bigskip
-
-    \begin{alertblock}{Avoid \textbf{long-standing} tasks within behaviours}
-        \begin{itemize}
-            \item they would block/slow down any other behaviour
-            \item and therefore the whole agent
-        \end{itemize}
-    \end{alertblock}
-
-\end{frame}
-
-\section{API}
+\section{Custom API}
 
 \subsection{Disclaimer}
 
@@ -995,14 +960,118 @@
     Class full of \alert{static factory methods}\footnote{\url{https://en.wikipedia.org/wiki/Factory_method_pattern}} for most common behaviours:
     %
     \begin{description}
-        \item[\texttt{atomic(Runnable)}] --- creates a \texttt{OneShotBehaviour} out of a lambda expression
+        \item[\texttt{atomic(Runnable)}] --- creates a \texttt{OneShotBehaviour} out of a lambda
+        \item[\texttt{stop()}] --- \texttt{OneShotBehaviour} stopping the agent which executes it
         \item[\texttt{sequence(Behaviour,Behaviour...)}] --- creates a \texttt{SequentialBehaviour} out of a number of behaviours
         \item[\texttt{all(Behaviour,Behaviour...)}] --- creates a \texttt{ParallelBehaviour} out of a number of behaviours, requiring \alert{all} of them to terminate before terminating
         \item[\texttt{any(Behaviour,Behaviour...)}] --- creates a \texttt{ParallelBehaviour} out of a number of behaviours, requiring \alert{any} of them to terminate before terminating
-        \item[\texttt{stop()}] --- creates a \texttt{ParallelBehaviour} out of a number of behaviours, requiring \alert{any} of them to terminate before terminating
+        \item[\texttt{repeatWhile(Behaviour,Supplier<Boolean>)}] --- repeats a behaviour several times, until the provided supplier returns false
+        \item[\texttt{repeatForEver(Behaviour)}] --- repeats a behaviour over and over again, indefinitely
+        \item[\texttt{sendMessage(...)}] --- builds a message on the fly and sends it to one or more receivers
+        \item[\texttt{receiveMessage(...)}] --- receives \alert{just one message} matching a given template
+        \item[\texttt{listenMessage(...)}] --- receives \alert{all the messages} matching a given template
     \end{description}
+
+    \framebreak
+
+    Purpose: making agents' classes more concise:
+    %
+    \lstinputlisting[language=Java]{./res/src/SequentialAgent.java}
+
 \end{frame}
 
+\subsection{The \texttt{Messages} class}
+
+\begin{frame}\frametitle{The \texttt{Message\textbf{s}} class}
+    Class full of \alert{static factory methods} for messages:
+    %
+    \begin{description}
+        \item[\texttt{localAID(String)}] --- creates a \alert{local} agent ID out of a string
+        \item[\texttt{globalAID(String)}] --- creates a \alert{global} agent ID out of a string
+        \item[\texttt{message(Performative, String, AID...)}] --- creates a message out of a performative and a content string, directed towards one or more recipients
+    \end{description}
+
+\end{frame}
+
+\section{Exercises}
+
+\startExercise
+
+\subsection{Exercise \currentExercise{} -- Building Basic Behaviours}
+
+\begin{frame}[c,allowframebreaks]{Exercise \currentExercise{} -- Building Basic Behaviours}
+
+    \begin{block}{Repository}\centering
+        \url{https://gitlab.com/pika-lab/courses/ds/ay2021/lab-2}
+    \end{block}
+
+    \bigskip
+
+    Activity:
+    %
+    \medskip
+    %
+    \begin{enumerate}
+        \item Have a look to the provided code: it contains both \texttt{main} and \texttt{test} code
+
+        \medskip
+
+        \item Exercise \currentExercise{} requires the following classes to be modified:
+        %
+        \begin{itemize}
+            \item \texttt{it.unibo.ds.jade.\alert{Behaviours}}
+            \item \texttt{it.unibo.ds.jade.\alert{impl.*}}
+        \end{itemize}
+
+        \medskip
+
+        \item In such a way that the following test suites succeed:
+        %
+        \begin{itemize}
+            \item \texttt{it.unibo.ds.jade.test.\alert{TestBasicBehaivours}}
+        \end{itemize}
+
+        \framebreak
+
+        \item We suggest the following implementation order for behaviours:
+        %
+        \begin{enumerate}
+            \item \texttt{atomic} and \texttt{stop}
+            \item \texttt{sequence}
+            \item \texttt{any} and \texttt{all}
+            \item \texttt{repeatWhile} and \texttt{repeatForEver}
+            \item \texttt{send}
+            \item \texttt{receive} and \texttt{listen}
+        \end{enumerate}
+
+        \medskip
+
+        \item You can rely on Gradle's \texttt{test} task to launch the tests
+        %
+        \begin{itemize}
+            \item of course, ignore next exercises' tests results
+        \end{itemize}
+
+        \medskip
+
+        \item[!] Solutions which do not pass the tests are not correct
+        %
+        \begin{itemize}
+            \item tests are based on JUnit: they should work in the same way on all platforms
+        \end{itemize}
+
+        \medskip
+
+        \item Push your solution on GitLab, \alert{even if incomplete}
+        %
+        \begin{itemize}
+            \item use the \texttt{submissions/\alert{name.surnameN}} branch
+            \item tests are automatically run upon push: consider it a feedback
+        \end{itemize}
+
+    \end{enumerate}
+
+\end{frame}
 
 
 %===============================================================================
