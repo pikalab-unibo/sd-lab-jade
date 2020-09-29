@@ -119,10 +119,113 @@
     		\end{itemize}
 	    \end{itemize}
     \end{itemize}
-
-
 \end{frame}
 
+\begin{frame}{General workflow for demos}
+	
+	\begin{enumerate}
+		\item Start a new, empty platform with 
+		%
+		\begin{itemize}
+			\item[\$] \texttt{gradle startPlatform}
+		\end{itemize}
+		
+		\vfill
+		
+		\item Edit the code of the agent to be discussed (e.g. \texttt{HelloAgent})
+		
+		\vfill
+		
+		\item Add the following line to \texttt{gradle.properties}:
+		%
+		\begin{center}\ttfamily
+			\alert{agents}=\textit{helloAgent}:it.unibo.ds.jade.HelloAgent
+		\end{center}
+	
+		\vfill
+		
+		\item Start a new container containing the \texttt{helloAgent} agent
+		%
+		\begin{itemize}
+			\item[\$] \texttt{gradle startContainer}
+		\end{itemize}
+	
+		\vfill
+		
+		\item Inspect the logs, draw conclusions
+		
+		\vfill
+		
+		\item Close the container $\rightarrow$ Change some code $\rightarrow$ Restart container
+		
+		\vfill
+		
+		\item Close the platform	
+		
+	\end{enumerate}
+
+ \end{frame}
+
+\section{Demos}
+
+\begin{frame}{Agents' code overview}
+	\lstinputlisting[language=Java]{./res/src/ExampleAgent.java}
+\end{frame}
+
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Atomic actions}
+
+\begin{frame}{Demo \currentDemo{} -- Hello World}
+	\lstinputlisting[language=Java]{./res/src/HelloAgent.java}
+	%
+	\begin{itemize}
+		\item what do you expect the agent to do?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo \currentDemo{} -- One-Shot Behaviour}
+
+	A behaviour which is executed just once:
+	%
+	\vfill
+	%
+	\lstinputlisting[language=Java]{./res/src/OneShotBehaviour.java}
+	%
+	\begin{itemize}
+		\item represents \alert{atomic} actions
+	\end{itemize}
+\end{frame}
+
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Long-lasting actions}
+
+\begin{frame}{Demo \currentDemo{} -- Hello World\textbf{s}}
+	\lstinputlisting[language=Java]{./res/src/HelloAgent2.java}
+	%
+	\begin{itemize}
+		\item what do you expect the agent to do?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo \currentDemo{} -- Cyclic Behaviour}
+	
+	A behaviour which is executed infinitely many times:
+	%
+	\vfill
+	%
+	\lstinputlisting[language=Java]{./res/src/CyclicBehaviour.java}
+	%
+	\begin{itemize}
+		\item represents \alert{long-lasting} actions
+		\item what's the advantage w.r.t. ordinary \texttt{while(true)} loops?
+	\end{itemize}
+\end{frame}
+
+\startDemo
+
+\subsection{Demo \currentDemo{} -- Advantages of Internal Scheduling}
 
 %===============================================================================
 \section*{}
