@@ -1,0 +1,150 @@
+% !TeX spellcheck = en_GB
+\documentclass{beamer}\mode<presentation>{\usetheme{AMSCesenaPurpleAndGold}}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
+\usepackage{common}
+
+\newcommand{\labN}{2}
+
+\title[L\labN{} -- \jade{} Exercises]{L\labN{} -- \jade{} Exercises}
+%
+\subtitle[SD]{Distributed Systems / Technologies}
+%
+\author[Ciatto \and Omicini]
+{\emph{Giovanni Ciatto} \and Andrea Omicini\\
+\texttt{giovanni.ciatto@unibo.it \and andrea.omicini@unibo.it}}
+%
+\institute[DISI, Univ. Bologna]
+{Dipartimento di Informatica -- Scienza e Ingegneria (DISI)\\\textsc{Alma Mater Studiorum} -- Universit{\`a} di Bologna a Cesena}
+%
+\date[A.Y. 2020/2021]{Academic Year 2020/2021}
+
+\setbeamercovered{transparent}
+
+\AtBeginSection[]
+{
+\begin{frame}[c]\frametitle{Next in Line\ldots}
+%    \begin{multicols}{2}
+        \tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide, subsubsectionstyle=hide/hide]
+%    \end{multicols}
+\end{frame}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}[c]\frametitle{Outline}
+    % \begin{multicols}{2}
+	    \tableofcontents[sectionstyle=show/show, subsectionstyle=show/show, subsubsectionstyle=show/show]
+    % \end{multicols}
+\end{frame}
+
+%\section{Motivation}
+
+%\begin{frame}[allowframebreaks]
+%\frametitle{Motivation}
+%
+%    \begin{itemize}
+%        \item Some motivation
+%
+%    \end{itemize}
+%
+%\end{frame}
+
+% \begin{frame}
+% \frametitle{Lecture goals}
+
+%     \begin{itemize}
+%         \item some goals
+%     \end{itemize}
+
+% \end{frame}
+
+\section{Operations}
+
+\subsection{\jade{} + Gradle}
+
+\begin{frame}{Running \jade{} from Gradle}
+    
+    We provide two tasks for running \jade{} from Gradle:
+    %
+    \vfill
+    %
+    \begin{itemize}
+    	\item \alert{\texttt{startPlatform}} --- creates \& starts a new platform with GUI
+    	%
+    	\begin{itemize}
+    		\item default name: \texttt{it.unibo.sd.jade.platform}
+    		%
+    		\begin{itemize}
+				\item (settable through the \texttt{platformName} property)
+    		\end{itemize}
+    	
+    		\item default host: \texttt{localhost}
+    		%
+    		\begin{itemize}
+    			\item (settable through the \texttt{platformHost} property)
+    		\end{itemize}
+    	
+    		\item \alert{no agent} further agent is instantiated
+    	\end{itemize}
+    
+    	\vfill
+    	
+	    \item \alert{\texttt{startContainer}} --- creates \& starts a new container 
+	    %
+	    \begin{itemize}
+	    	
+	    	\item default name: \texttt{it.unibo.sd.jade.container\#\textit{TIMESTAMP}}
+	    	%
+	    	\begin{itemize}
+	    		\item (settable through the \texttt{containerBaseName} property)
+	    	\end{itemize}
+	    	
+	    	\item assumes a platform is running on \texttt{localhost}
+	    	%
+	    	\begin{itemize}
+	    		\item (different hosts can be provided via the \texttt{platformHost} property)
+	    	\end{itemize}
+    	
+    		\item agents to be instantiated can be specified via the \alert{\texttt{agents}} property 
+    		%
+    		\begin{itemize}
+    			\item semi-colon-separated list of string in the form
+    			%
+    			\begin{center}\ttfamily
+    				AGENT\_NAME\alert{:}package.of.AgentClass$\underbrace{\texttt{(arg1, arg2, \ldots)}}_{optional}$-
+    			\end{center}
+    		\end{itemize}
+	    \end{itemize}
+    \end{itemize}
+
+
+\end{frame}
+
+
+%===============================================================================
+\section*{}
+%===============================================================================
+\frame{\titlepage}
+
+%%===============================================================================
+%\section*{\bibname}
+%%===============================================================================
+%
+%\setbeamertemplate{page number in head/foot}{}
+%%\\\\\\\\\\\\\\\\\\\\\
+%\begin{frame}[t,allowframebreaks,noframenumbering]\frametitle{\refname}
+%    % \begin{frame}[c]\frametitle{\refname}
+%    %	\footnotesize
+%    %	\scriptsize
+%    \tiny
+%    \bibliographystyle{plain}
+%    \bibliography{sd-lab-jade}
+%\end{frame}
+%%\\\\\\\\\\\\\\\\\\\\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
