@@ -1,20 +1,27 @@
 public class ExampleAgent extends Agent {
+
   @Override
-  protected void setup() { addBehaviour(mainBehaviour()); }
+  protected void setup() { 
+    addBehaviour(risingCount()); 
+    addBehaviour(fallingCount()); 
+  }
 
-  private int rising, falling; // initialised to 0
+  private int rising = 0;
+  private int falling = 0;
 
-  @Override private Behaviour risingCount() {
+  @Override 
+  private Behaviour risingCount() {
     return new CyclicBehaviour() {
       @Override
-      public void action() { log("Hello world! (%d)", round++); }
+      public void action() { log("Hello world! (%d)", rising++); }
     };
   }
 
-  @Override private Behaviour fallingCount() {
+  @Override 
+  private Behaviour fallingCount() {
     return new CyclicBehaviour() {
       @Override
-      public void action() { log("Hello world! (%d)", round++); }
+      public void action() { log("Hello world! (%d)", falling--); }
     };
   }
 }
