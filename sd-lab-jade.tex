@@ -24,16 +24,16 @@
 \AtBeginSection{
     \begin{frame}[c]\frametitle{Outline}
         % 		\begin{multicols}{2}
-        \tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/hide, subsubsectionstyle=show/hide]
+        \tableofcontents[sectionstyle=show/shaded, subsectionstyle=hide/hide, subsubsectionstyle=hide/hide]
         % 		\end{multicols}
     \end{frame}
 }
 
 \AtBeginSubsection{
     \begin{frame}[c]\frametitle{Next in Line\ldots}
-        % 		\begin{multicols}{2}
-        \tableofcontents[sectionstyle=shaded/shaded, subsectionstyle=show/shaded, subsubsectionstyle=show/hide]
-        % 		\end{multicols}
+		\begin{multicols}{2}
+        	\tableofcontents[sectionstyle=show/shaded, subsectionstyle=show/shaded, subsubsectionstyle=hide/hide]
+		\end{multicols}
     \end{frame}
 }
 
@@ -138,17 +138,37 @@
         %
     \end{block}
     %
+    %
+    \begin{block}{Remote Management Agent (RMA)}
+    	\begin{center}
+    		\includegraphics[width=.8\linewidth]{./res/img/jade_rma}
+    	\end{center}
+    	%
+    	\begin{itemize}
+    		\item GUI aimed at controlling/inspecting the platform
+    		\item one per platform
+    		\item appears when launching the platform with a \texttt{-gui} argument
+    	\end{itemize}
+    	%
+    \end{block}
+    %
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
 
 \subsection{\jade{} + Gradle}
 
 \begin{frame}[allowframebreaks]{Running \jade{} from Gradle}
+	
+	\begin{block}{Repository}\centering
+		\url{https://gitlab.com/pika-lab/courses/ds/ay2021/lab-2}
+	\end{block}
+
+	\bigskip
 
     In this lab, we provide two tasks for running \jade{} from Gradle:
-
-    \bigskip
-
+	%
+    \medskip
+	%
     \begin{block}{\textbf{\texttt{startPlatform}} --- creates \& starts a new platform with GUI}
         \begin{itemize}
             \item default name: \texttt{it.unibo.sd.jade.platform}
@@ -210,9 +230,13 @@
         \begin{itemize}
             \item instances of \alert{\texttt{jade.core.Agent}}-derived classes
             \item \alert{single-threaded}, \emph{multitasking} computational model based on concurrent behaviours
+            %
+            \begin{itemize}
+            	\item one thread per agent
+            \end{itemize}
             \item \emph{asynchronous} communication model based on \fipa{} \acl{} messages
             \item FSM-like lifecycle with public methods to perform state transitions
-            \item \texttt{jade.core.AID} class implements the globally unique naming service
+            \item \alert{\texttt{jade.core.AID}} class implements the globally unique naming service
             %
             \begin{itemize}
                 \item agent name of the kind \texttt{<localname>@<platformname>}
@@ -341,7 +365,7 @@
         \begin{itemize}
             \item instances of \alert{\texttt{jade.core.behaviours.Behaviour}}-derived classes
             \item executed concurrently according to a \alert{round-robin, non-preemptive} scheduler internal to agents---thus, hidden to programmers
-            \item everything is still \emph{single-threaded}\ldots
+            \item within a single agent, everything is still \emph{single-threaded}\ldots
             %
             \begin{itemize}
                 \item[$\rightarrow$] method \alert{\texttt{action()}} should be overridden to carry out the application-specific task
@@ -580,7 +604,7 @@
                 \item[$\rightarrow$] thus, if it returns \texttt{false} the behaviour is re-scheduled for next \emph{round}
             \end{itemize}
             %
-            \item[!] \texttt{action()} is run \emph{from the beginning every time}: there is no way to ``stop-then-resume'' a behaviour
+            \item[!] \texttt{action()} is run \emph{from the beginning every time}: there is no way to ``stop-then-resume'' it
             %
             \begin{itemize}
                 \item[$\rightarrow$] therefore, the computational state must be explicitly managed by the programmer in instance variables% (or exploiting \texttt{CompositeBehaviour})
@@ -637,7 +661,7 @@
 
     \framebreak
 
-    \begin{block}{Round-robin cooperative scheduling}
+    \begin{block}{Round-robin non-preemptive scheduling}
         An agent can carry out \alert{several} behaviours \alert{simultaneously}
         %
         \begin{itemize}
@@ -667,7 +691,7 @@
 
     \framebreak
 
-    Pay attention to the \alert{cooperative} part. Consider for instance:
+    Pay attention to the \alert{non-preemptive} part. Consider for instance:
     %
     \lstinputlisting[language=Java]{./res/src/HelloAgent4.java}
 
@@ -740,13 +764,13 @@
             \item create an \acl{} message
             %
             \begin{itemize}
-                \item \footnotesize\texttt{ACLMessage msg = new ACLMessage(ACLMessage.<performative>);}
+                \item \footnotesize\texttt{ACLMessage msg = new ACLMessage(ACLMessage.\alert{<performative>});}
             \end{itemize}
             %
             \item fill its (mandatory) fields
             %
             \begin{itemize}
-                \item \footnotesize\texttt{msg.addReceiver(new AID(receiver));}
+                \item \footnotesize\texttt{msg.addReceiver(new AID("<receiverName>"));}
                 \item \footnotesize\texttt{msg.setContent("<content>");}
                 \item \ldots
             \end{itemize}
@@ -795,25 +819,27 @@
         %
     \end{block}
     %
-    \begin{block}{\jade{} local names}
-        The simplest way to identify an agent is by its local name
-        \begin{itemize}\tt
-            \item[]\ldots
-            \item[] msg.addReceiver(new AID("myAgent", \alert{false}));
-            \item[] \ldots
-        \end{itemize}
-        \jade{} ACC will automatically associate to the given agent name its \texttt{AID}
+    \begin{block}{\jade{} local vs. global names}
+        \begin{description}
+        	\item[\texttt{new AID("localName", \alert{false})}] --- parses the name string assuming it lacks the \texttt{@platformName} part
+        	\item[\texttt{new AID("localName@platformName", \alert{true})}] --- parses the name string assuming it includes the \texttt{@platformName} part
+    	    \item[\texttt{new AID("globalName")}] --- shortcut for \texttt{new AID("globalName", \alert{true})}
+        \end{description}
     \end{block}
     %
-    \begin{block}{\jade{} RMA}
+    \begin{block}{Discovering agents' names via the RMA}
         By simply launching the RMA with
         \begin{center}
             \texttt{java -cp \ldots{} jade.Boot \alert{-gui}}
         \end{center}
         you have a GUI which displays all agents in the monitored \jade{} platform along with their \texttt{AID}s
+        %
+        \begin{itemize}
+        	\item[!] this is not an automatic procedure $\rightarrow$ only good for humans
+        \end{itemize}
     \end{block}
     %
-    \begin{block}{Using the AMS}
+    \begin{block}{Discovering agents' names via the AMS}
         A much more comprehensive and flexible way to query \jade{} about existing agents is by interacting with the AMS service
         %
         \begin{enumerate}
@@ -891,7 +917,7 @@
             \item[\texttt{matchConversationId()}] match checked on \texttt{:conversation-id} slot
             \item[\texttt{matchOntology()}] match checked on \texttt{:ontology} slot
             \item[\texttt{matchSender()}] match checked on \texttt{:sender} slot
-            \item[\ldots] \ldots
+            \item[$\vdots$]
         \end{description}
         %
     \end{block}
@@ -1073,27 +1099,229 @@
 
 \end{frame}
 
+\subsection{Remarks about Agents Testing}
+
+\begin{frame}%[allowframebreaks]
+	\frametitle{General Remarks about Agents Testing}
+	
+	\begin{itemize}
+		\item Testing a MAS (and, in general, a concurrent system) is complicate
+		%
+		\begin{itemize}
+			\item even if on a single machine
+			\item because of \alert{non-determinism}, which may easily arise from \alert{interaction} and \alert{concurrency}
+		\end{itemize}
+	
+		\vfill
+	
+		\item Generally speaking, successful testing \alert{does not prove} correctness
+		%
+		\begin{itemize}
+			\item successful tests + high coverage\footnote{\url{https://en.wikipedia.org/wiki/Code_coverage}} + no concurrency $\rightarrow$ high confidence
+			\item successful tests + high coverage + concurrency $\rightarrow$ low confidence
+		\end{itemize}
+	
+		\vfill
+		
+		\item In concurrent systems tests must be repeated \alert{several times} to give an high confidence 
+		%
+		\begin{itemize}
+			\item of course assuming tests have an high coverage and always pass
+			\item a single successful test may be a lucky strike
+		\end{itemize}
+	
+		\vfill
+		
+		\item But how should MAS tests be written?
+		%
+		\begin{itemize}
+			\item and how could they be read as a specification?
+		\end{itemize}
+		
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+	\frametitle{How to write/read tests for MAS}
+	
+	\begin{block}{General idea}
+		\begin{enumerate}
+			\item let agents record their logs into a (possibly shared) \alert{list of logs}
+			\item wait for all agents' termination
+			\item the list contains the relevant \alert{observable events} of a run of the MAS
+			\item draw assertions about the \alert{partial ordering} of events in the list
+		\end{enumerate}
+	\end{block}
+	
+	\bigskip
+	
+	\begin{itemize}
+		\item[!] this is how tests in \texttt{it.unibo.ds.jade.\alert{test.*}} are written
+	\end{itemize}
+
+	\framebreak
+	
+	Consider for instance the following agent:
+	%
+	\lstinputlisting[language=Java]{./res/src/TestParallelOrAgent.java}
+	
+	\framebreak
+	
+	We can provide a specification of its intended behaviour via the following test:
+	%
+	\lstinputlisting[language=Java]{./res/src/testParallelOr.java}
+	
+\end{frame}
+
+\startExercise
+
+\subsection{Exercise \currentExercise{} -- The Ping-Pong Pattern}
+
+\begin{frame}[c,allowframebreaks]{Exercise \currentExercise{} -- The Ping-Pong Pattern}
+	
+	\begin{block}{Repository}\centering
+		\url{https://gitlab.com/pika-lab/courses/ds/ay2021/lab-2}
+	\end{block}
+	
+	\bigskip
+	
+	\begin{enumerate}
+		
+		\item Here we focus on a very simple interaction pattern: Ping-Pong
+		%
+		\begin{itemize}
+			\item it's like an `Hello World' for interaction
+		\end{itemize}
+	
+		\medskip
+		
+		\item Basic explanation: there are two agents (\texttt{pinger} and \texttt{ponger})
+		%
+		\begin{enumerate}
+			\item \texttt{pinger} initiates interaction by sending a \texttt{`ping'} message to \texttt{ponger}
+			\item \texttt{ponger} reacts by sending back a \texttt{`pong'} message to \texttt{pinger}
+			\item \texttt{ponger} reacts sending another \texttt{`ping'} message to \texttt{ponger}
+			\item and so on, indefinitely
+		\end{enumerate}
+	
+		\framebreak
+		
+		\item This is a didactic pattern which lets students explore both:
+		%
+		\begin{itemize}
+			\item how to send a message
+			\item how to receive a message
+		\end{itemize}
+	
+		\medskip
+	
+		\item Exercise \currentExercise{} requires the following classes to be implemented:
+		%
+		\begin{itemize}
+			\item \texttt{it.unibo.ds.jade.\alert{exercise.\textit{Pinger}}}
+		\end{itemize}
+		
+		\medskip
+		
+		\item In such a way that the following test suites succeed:
+		%
+		\begin{itemize}
+			\item \texttt{it.unibo.ds.jade.test.\alert{TestPingPong}}
+		\end{itemize}
+		
+		\medskip
+		
+		\item[!] Solutions which do not pass the tests are not correct
+		
+		\medskip
+		
+		\item Push your solution on GitLab, \alert{even if incomplete}
+		
+	\end{enumerate}
+	
+\end{frame}
+
+\startExercise
+
+\subsection{Exercise \currentExercise{} -- A smarter Ping-Pong Pattern}
+
+\begin{frame}[c,allowframebreaks]{Exercise \currentExercise{} -- A smarter Ping-Pong Pattern}
+	
+	\begin{block}{Repository}\centering
+		\url{https://gitlab.com/pika-lab/courses/ds/ay2021/lab-2}
+	\end{block}
+	
+	\bigskip
+	
+	\begin{alertblock}{The Ping-Pong pattern (so far) relies on an \textbf{unrealistic} assumption}
+		\centering
+		the agents know each other's name since their birth
+	\end{alertblock}
+	%
+	\medskip
+	%
+	\begin{enumerate}
+		
+		\item Here we learn how this assumption can be broken via the AMS
+		%
+		\begin{itemize}
+			\item \jade{} agents can \alert{look for} peers by querying the AMS
+		\end{itemize} 
+		
+		\medskip
+		
+		\item Exercise \currentExercise{} requires the following classes to be implemented:
+		%
+		\begin{itemize}
+			\item \texttt{it.unibo.ds.jade.\alert{exercise.\textit{SmartPinger}}}
+		\end{itemize}
+		
+		\framebreak
+		
+		\item In such a way that the following test suites succeed:
+		%
+		\begin{itemize}
+			\item \texttt{it.unibo.ds.jade.test.\alert{TestSmartPingPong}}
+		\end{itemize}
+	
+		\medskip
+		
+		\item A \texttt{SmartPinger} is a particular sort of \textit{Pinger} 
+		%
+		\begin{itemize}
+			\item assuming the \textit{Ponger} has a random, unknown name
+			\item to be discovered via the AMS
+			\item \emph{before} starting the interaction pattern
+		\end{itemize}
+		
+		\medskip
+		
+		\item[!] Solutions which do not pass the tests are not correct
+		
+		\medskip
+		
+		\item Push your solution on GitLab, \alert{even if incomplete}
+		
+	\end{enumerate}
+	
+\end{frame}
 
 %===============================================================================
-\section*{}
+\section{\bibname}
 %===============================================================================
-\frame{\titlepage}
 
-%%===============================================================================
-%\section*{\bibname}
-%%===============================================================================
-%
-%\setbeamertemplate{page number in head/foot}{}
-%%\\\\\\\\\\\\\\\\\\\\\
-%\begin{frame}[t,allowframebreaks,noframenumbering]\frametitle{\refname}
-%    % \begin{frame}[c]\frametitle{\refname}
-%    %	\footnotesize
-%    %	\scriptsize
-%    \tiny
-%    \bibliographystyle{plain}
-%    \bibliography{sd-lab-jade}
-%\end{frame}
-%%\\\\\\\\\\\\\\\\\\\\\
+\setbeamertemplate{page number in head/foot}{}
+%\\\\\\\\\\\\\\\\\\\\\
+\begin{frame}[t,allowframebreaks,noframenumbering]\frametitle{\refname}
+    % \begin{frame}[c]\frametitle{\refname}
+    %	\footnotesize
+    %	\scriptsize
+    \tiny
+    \bibliographystyle{plain}
+    \bibliography{sd-lab-jade}
+\end{frame}
+%\\\\\\\\\\\\\\\\\\\\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
