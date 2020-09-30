@@ -308,10 +308,10 @@
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
 
-\begin{frame}{General workflow for starting agents in Gradle}
+\begin{frame}{General Workflow for Starting Agents in Gradle}
 
     \begin{enumerate}
-        \item Start a new, empty platform with
+        \item start a new, empty platform with
         %
         \begin{itemize}
             \item[\$] \texttt{gradle startPlatform}
@@ -319,11 +319,11 @@
 
         \vfill
 
-        \item Edit the code of the agent to be discussed (e.g. \texttt{HelloAgent})
+        \item edit the code of the agent to be discussed (e.g. \texttt{HelloAgent})
 
         \vfill
 
-        \item Add the following line to \texttt{gradle.properties}:
+        \item add the following line to \texttt{gradle.properties}:
         %
         \begin{center}\ttfamily
             \alert{agents}=\textit{nameOfTheAgent}:package.of.the.AgentClass
@@ -331,7 +331,7 @@
 
         \vfill
 
-        \item Start a new container for the aforementioned agent
+        \item start a new container for the aforementioned agent
         %
         \begin{itemize}
             \item[\$] \texttt{gradle startContainer}
@@ -339,15 +339,15 @@
 
         \vfill
 
-        \item Inspect the logs, draw conclusions
+        \item inspect the logs, draw conclusions
 
         \vfill
 
-        \item Close the container $\rightarrow$ Change some code $\rightarrow$ Restart container
+        \item close the container $\rightarrow$ Change some code $\rightarrow$ Restart container
 
         \vfill
 
-        \item Close the platform
+        \item close the platform
 
     \end{enumerate}
 
@@ -532,7 +532,7 @@
 \end{frame}
 %\\\\\\\\\\\\\\\\\\\\\
 
-\begin{frame}{Agents' code overview}
+\begin{frame}{Agents' Code Overview}
     \lstinputlisting[language=Java]{./res/src/ExampleAgent.java}
 \end{frame}
 
@@ -575,7 +575,7 @@
 
 \begin{frame}{Demo \currentDemo{} -- Cyclic Behaviour}
 
-    A behaviour which is executed infinitely many times:
+    A behaviour which is executed infinitely many times
     %
     \vfill
     %
@@ -643,7 +643,7 @@
 \subsection{Demo \currentDemo{} -- Advantages of Internal Scheduling}
 
 \begin{frame}[allowframebreaks]
-    \frametitle{Demo \currentDemo{} -- Concurrent behaviours}
+    \frametitle{Demo \currentDemo{} -- Concurrent Behaviours}
 
     Consider the following agent:
     %
@@ -685,13 +685,13 @@
 
     \framebreak
 
-    Expected outcome:
+    Expected outcome
     %
     \lstinputlisting{./res/src/ExpectedOutcome3.txt}
 
     \framebreak
 
-    Pay attention to the \alert{non-preemptive} part. Consider for instance:
+    Pay attention to the \alert{non-preemptive} part. Consider for instance
     %
     \lstinputlisting[language=Java]{./res/src/HelloAgent4.java}
 
@@ -1033,16 +1033,16 @@
 
     \bigskip
 
-    Activity:
+    Activity
     %
     \medskip
     %
     \begin{enumerate}
-        \item Have a look to the provided code: it contains both \texttt{main} and \texttt{test} code
+        \item have a look to the provided code: it contains both \texttt{main} and \texttt{test} code
 
         \medskip
 
-        \item Exercise \currentExercise{} requires the following classes to be modified:
+        \item exercise \currentExercise{} requires the following classes to be modified
         %
         \begin{itemize}
             \item \texttt{it.unibo.ds.jade.\alert{Behaviours}}
@@ -1051,7 +1051,7 @@
 
         \medskip
 
-        \item In such a way that the following test suites succeed:
+        \item so that the following test suites succeed
         %
         \begin{itemize}
             \item \texttt{it.unibo.ds.jade.test.\alert{TestBasicBehaivours}}
@@ -1059,7 +1059,7 @@
 
         \framebreak
 
-        \item We suggest the following implementation order for behaviours:
+        \item we suggest the following implementation order for behaviours
         %
         \begin{enumerate}
             \item \texttt{atomic} and \texttt{stop}
@@ -1072,7 +1072,7 @@
 
         \medskip
 
-        \item You can rely on Gradle's \texttt{test} task to launch the tests
+        \item you can rely on Gradle's \texttt{test} task to launch the tests
         %
         \begin{itemize}
             \item of course, ignore next exercises' tests results
@@ -1080,7 +1080,7 @@
 
         \medskip
 
-        \item[!] Solutions which do not pass the tests are not correct
+        \item[!] solutions which do not pass the tests are not correct
         %
         \begin{itemize}
             \item tests are based on JUnit: they should work in the same way on all platforms
@@ -1088,7 +1088,7 @@
 
         \medskip
 
-        \item Push your solution on GitLab, \alert{even if incomplete}
+        \item push your solution on GitLab, \alert{even if incomplete}
         %
         \begin{itemize}
             \item use the \texttt{submissions/\alert{name.surnameN}} branch
@@ -1101,11 +1101,10 @@
 
 \subsection{Remarks about Agents Testing}
 
-\begin{frame}%[allowframebreaks]
-	\frametitle{General Remarks about Agents Testing}
+\begin{frame}[c]{General Remarks about Agents Testing}
 	
 	\begin{itemize}
-		\item Testing a MAS (and, in general, a concurrent system) is complicate
+		\item testing a MAS (and, in general, a concurrent system) is complicate
 		%
 		\begin{itemize}
 			\item even if on a single machine
@@ -1114,7 +1113,7 @@
 	
 		\vfill
 	
-		\item Generally speaking, successful testing \alert{does not prove} correctness
+		\item generally speaking, successful testing \alert{does not prove} correctness
 		%
 		\begin{itemize}
 			\item successful tests + high coverage\footnote{\url{https://en.wikipedia.org/wiki/Code_coverage}} + no concurrency $\rightarrow$ high confidence
@@ -1123,7 +1122,7 @@
 	
 		\vfill
 		
-		\item In concurrent systems tests must be repeated \alert{several times} to give an high confidence 
+		\item in concurrent systems tests must be repeated \alert{several times} to give an high confidence 
 		%
 		\begin{itemize}
 			\item of course assuming tests have an high coverage and always pass
@@ -1132,7 +1131,7 @@
 	
 		\vfill
 		
-		\item But how should MAS tests be written?
+		\item but how should MAS tests be written?
 		%
 		\begin{itemize}
 			\item and how could they be read as a specification?
@@ -1142,8 +1141,7 @@
 	
 \end{frame}
 
-\begin{frame}[allowframebreaks]
-	\frametitle{How to write/read tests for MAS}
+\begin{frame}[c,allowframebreaks]{How to Write/Read Tests for MAS}
 	
 	\begin{block}{General idea}
 		\begin{enumerate}
@@ -1244,9 +1242,9 @@
 
 \startExercise
 
-\subsection{Exercise \currentExercise{} -- A smarter Ping-Pong Pattern}
+\subsection{Exercise \currentExercise{} -- A Smarter Ping-Pong Pattern}
 
-\begin{frame}[c,allowframebreaks]{Exercise \currentExercise{} -- A smarter Ping-Pong Pattern}
+\begin{frame}[c,allowframebreaks]{Exercise \currentExercise{} -- A Smarter Ping-Pong Pattern}
 	
 	\begin{block}{Repository}\centering
 		\url{https://gitlab.com/pika-lab/courses/ds/ay2021/lab-2}
@@ -1263,7 +1261,7 @@
 	%
 	\begin{enumerate}
 		
-		\item Here we learn how this assumption can be broken via the AMS
+		\item here we learn how this assumption can be broken via the AMS
 		%
 		\begin{itemize}
 			\item \jade{} agents can \alert{look for} peers by querying the AMS
@@ -1271,7 +1269,7 @@
 		
 		\medskip
 		
-		\item Exercise \currentExercise{} requires the following classes to be implemented:
+		\item exercise \currentExercise{} requires the following classes to be implemented:
 		%
 		\begin{itemize}
 			\item \texttt{it.unibo.ds.jade.\alert{exercise.\textit{SmartPinger}}}
@@ -1279,7 +1277,7 @@
 		
 		\framebreak
 		
-		\item In such a way that the following test suites succeed:
+		\item so that the following test suites succeed:
 		%
 		\begin{itemize}
 			\item \texttt{it.unibo.ds.jade.test.\alert{TestSmartPingPong}}
@@ -1287,7 +1285,7 @@
 	
 		\medskip
 		
-		\item A \texttt{SmartPinger} is a particular sort of \textit{Pinger} 
+		\item a \texttt{SmartPinger} is a particular sort of \textit{Pinger} 
 		%
 		\begin{itemize}
 			\item assuming the \textit{Ponger} has a random, unknown name
@@ -1297,11 +1295,11 @@
 		
 		\medskip
 		
-		\item[!] Solutions which do not pass the tests are not correct
+		\item[!] solutions which do not pass the tests are not correct
 		
 		\medskip
 		
-		\item Push your solution on GitLab, \alert{even if incomplete}
+		\item push your solution on GitLab, \alert{even if incomplete}
 		
 	\end{enumerate}
 	
@@ -1313,11 +1311,11 @@
 
 \setbeamertemplate{page number in head/foot}{}
 %\\\\\\\\\\\\\\\\\\\\\
-\begin{frame}[t,allowframebreaks,noframenumbering]\frametitle{\refname}
-    % \begin{frame}[c]\frametitle{\refname}
-    %	\footnotesize
+%\begin{frame}[t,allowframebreaks,noframenumbering]\frametitle{\refname}
+\begin{frame}[c]\frametitle{\refname}
+   	\footnotesize
     %	\scriptsize
-    \tiny
+	%    \tiny
     \bibliographystyle{plain}
     \bibliography{sd-lab-jade}
 \end{frame}
